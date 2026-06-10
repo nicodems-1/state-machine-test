@@ -1,5 +1,4 @@
 from json import load, dump
-from llm_sdk import Small_LLM_Model
 import numpy as np
 import tree_functions as t
 
@@ -40,7 +39,7 @@ for element in calls:
     prompt = (f"This is a dictionnary, the format is: \"function_name\":\"function_description\" : {funcs}\n"
             f"You should find the corresponding function_name with this: {call_prompt}")
 
-    print(call_prompt)
+    # print(call_prompt)
 
     '''send the prompt to the model with function definitions such as Prompt + funcs_names + funcs_def' '''
 
@@ -63,8 +62,8 @@ for element in calls:
         current_state = current_state.children[token_index]
         ai_prompt.append(token_index)
         answer.append(token_index)
-    print(ai.decode(answer))
-    print('++++++++++++++++++++++')
+    # print(ai.decode(answer))
+    # print('++++++++++++++++++++++')
 
 
     '''Apply the masking logic, once the func is gotten, find the matching definition thanks to method and start building the dictionnary'''
@@ -100,7 +99,7 @@ for element in calls:
     def update_type(output = dict):
         types = []
         output = building_dictionnary()
-        print(output["parameters"])
+        # print(output["parameters"])
 
 
     output = building_dictionnary()

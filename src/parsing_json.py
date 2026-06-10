@@ -28,22 +28,24 @@ all_prompts: list[str] = []
 func_def: list[str] = []
 func_describe: list[str] = []
 
-try:
-    with open (input) as f:
-        function_calling = json.load(f)
-        for function in function_calling:
-            Functions.model_validate(function)
-            func_def.append(function['name'])
-except ValidationError as e:
-    print(e)
+def function_calling_parsing():
+    try:
+        with open (input) as f:
+            function_calling = json.load(f)
+            for function in function_calling:
+                Functions.model_validate(function)
+                func_def.append(function['name'])
+    except ValidationError as e:
+        print(e)
 
-try:
-    with open (functions_definitions) as f:
-        function_calling = json.load(f)
-        for prompt_call in function_calling:
-            Prompting.model_validate(prompt_call)
-            all_prompts.append(prompt_call['prompt'])
+def function_definition_parsing():
+    try:
+        with open (functions_definitions) as f:
+            function_calling = json.load(f)
+            for prompt_call in function_calling:
+                Prompting.model_validate(prompt_call)
+                all_prompts.append(prompt_call['prompt'])
             
-except ValidationError as e:
-    print(e)
+    except ValidationError as e:
+        print(e)
 
