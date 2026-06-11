@@ -1,3 +1,6 @@
+from llm_sdk import Small_LLM_Model
+
+
 class TrieNode():
     def __init__(self):
         self.children = {}
@@ -7,13 +10,12 @@ class FunctionTrie():
     def __init__(self, ai_instance):
         self.root = TrieNode()
         self.eos = 151645
-        self.ai = ai_instance
+        self.ai: Small_LLM_Model = ai_instance
 
-    def add_function(self, function_name):
-        self.tokenizer = self.ai.encode(function_name).tolist()[0]
-        # print(self.tokenizer)
+    def add_function(self, function_name: str):
+        self.tokens = self.ai.encode(function_name).tolist()[0]
         current_node = self.root
-        for token_id in self.tokenizer:
+        for token_id in self.tokens:
             if token_id in current_node.children:
                 current_node = current_node.children[token_id]
             else:

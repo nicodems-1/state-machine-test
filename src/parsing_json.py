@@ -1,17 +1,14 @@
 import json
-import argparse
 from pydantic import BaseModel, ValidationError
+from typing import Literal
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--input", default="data/input/function_calling_tests.json")
-parser.add_argument("--output", default="data/output")
-parser.add_argument("--functions_definitions", default="data/input/functions_definition.json")
+
 
 class Prompting(BaseModel):
     prompt: str
 
 class Type(BaseModel):
-    type: str
+    type: Literal["number", "integer", "string"]
 
 class Functions(BaseModel):
     name: str
@@ -24,28 +21,26 @@ class Ouput(BaseModel):
     name: str
     parameters: dict[str, type]
 
-all_prompts: list[str] = []
-func_def: list[str] = []
-func_describe: list[str] = []
 
-def function_calling_parsing():
+def prompt_parsing(prompt_json: str)-> list[Prompting] | None:
+    all_prompts: list[Prompting] = []
     try:
-        with open (input) as f:
+        with open (prompt_json) as f:
             function_calling = json.load(f)
-            for function in function_calling:
-                Functions.model_validate(function)
-                func_def.append(function['name'])
+            for prompt in function_calling:
+                all_prompts.append(Prompting.model_validate(prompt))
+            return all_prompts
     except ValidationError as e:
         print(e)
 
-def function_definition_parsing():
+def definition_parsing(func_def_json: str) -> list[Functions] | None:
+    func_def: list[Functions] = []
     try:
-        with open (functions_definitions) as f:
+        with open (func_def_json) as f:
             function_calling = json.load(f)
-            for prompt_call in function_calling:
-                Prompting.model_validate(prompt_call)
-                all_prompts.append(prompt_call['prompt'])
-            
+            for definition in function_calling:
+                func_def.append(Functions.model_validate(definition))
+            return func_def
     except ValidationError as e:
         print(e)
 
