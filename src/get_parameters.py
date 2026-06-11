@@ -1,7 +1,5 @@
 import json as j
-# from llm_sdk import Small_LLM_Model
 import numpy as np
-# ai = Small_LLM_Model()
 from parsing_json import Functions, Type
 
 def get_prompt_parameters(prompt: str, function_def: Functions) -> tuple[str, list[str], list[Type]]:
@@ -15,9 +13,10 @@ def get_prompt_parameters(prompt: str, function_def: Functions) -> tuple[str, li
   first_param = parameters[0]
   first_type = param_types[0]
   prompt_ai = (
-    f"""<|im_start|>system Task: Extract the parameters.<|im_end|>
-    <|im_start|>user User prompt: {prompt}, Definition is: {function_def.description}
-    {first_param} ({first_type.type}): <|im_end|>""")
+    f"""User prompt: {prompt}.
+    For context, definition is {function_def.description}
+    system Task: You are a strict data extraction engine
+    {first_param} ({first_type.type}):""")
   return (prompt_ai, parameters, param_types)
 
 def get_allowed_tokens(variable_type: Type, ai) -> list[int]:
@@ -33,29 +32,58 @@ def get_allowed_tokens(variable_type: Type, ai) -> list[int]:
           allowed_tokens.extend(ai.encode(item).tolist()[0])
     return allowed_tokens
       
-"""float model finding"""
 
 def get_parameters(user_prompt:str, function_def: Functions, ai):
     prompt, parameters, param_types = get_prompt_parameters(user_prompt, function_def)
-
     prompt = ai.encode(prompt).tolist()[0]
+
+
+
     answer = []
     length_param = len(parameters)
-    index = 0
-    while index < length_param:
-        allowed_tokens = get_allowed_tokens(param_types[index], ai)
-        # print(ai.decode(allowed_tokens))
+    param_index = 0
+    index_gen = 0
+    string_mode = False
+    answer_list = []
+
+
+    while param_index < length_param:
         logits: list[float] = ai.get_logits_from_input_ids(prompt)
         logits_cpy = np.array(logits)
-        if len(allowed_tokens) != 0:
+        allowed_tokens = get_allowed_tokens(param_types[param_index], ai)
+
+        if len(allowed_tokens) > 0:
           logits_cpy[...] = float('-inf')
           for tokens in allowed_tokens:
               logits_cpy[tokens] = logits[tokens]
+
         token_index = int(np.argmax(logits_cpy).item())
+
         prompt.append(token_index)
         answer.append(token_index)
-        if ai.decode(token_index) == '\n' or ai.decode(token_index) == '"':
-            print(f"ai_prompt_decoded = {ai.decode(prompt)}")
-            prompt += ai.encode(f' \n{parameters[index]} ({param_types[index].type}):').tolist()[0]
-            index += 1
-    return (ai.decode(answer))
+        if ai.decode(token_index).endswith('\n') or ai.decode(token_index) == '"':
+            if param_types[param_index].type in ["integer", "number"]:
+              prompt += ai.encode(f' \n{parameters[param_index]} ({param_types[param_index].type}):').tolist()[0]
+            else:
+              prompt += ai.encode(f'{parameters[param_index]} ({param_types[param_index].type}):\"').tolist()[0]
+            string_mode = False
+            index_gen = 0
+            if param_index < len(param_types):
+              print(f"Found an answer in str, passing through casting {ai.decode(answer)}")
+              if param_types[param_index].type == "integer":
+                print("INTEGER_TYPE")
+                answer_list.append(int(ai.decode(answer).strip("\n").strip(" ")))
+              elif param_types[param_index].type == "number":
+                print("NUMBER TYPE")
+                answer_list.append(float(ai.decode(answer).strip("\n").strip(" ")))
+              elif param_types[param_index].type == "string":
+                print("STRING TYPE")
+                answer_list.append(str(ai.decode(answer).strip("\n").strip(" ")))
+            param_index += 1
+            answer = []
+        index_gen += 1
+        if index_gen > 100:
+           print("could not find the parameters, exiting the model language")
+           break
+    print(f"Final list of answers: {answer_list}")
+    return (answer_list, parameters)

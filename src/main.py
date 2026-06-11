@@ -5,8 +5,8 @@ import tree_functions as t
 import argparse
 from get_func_name import match_func
 from get_parameters  import get_parameters
-
-
+from building import build_dictionnary
+import json as j
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -24,10 +24,13 @@ if __name__ == "__main__":
     '''adding functions to the trees'''
     for function in function_definitions:
         functree.add_function(function.name)
-
+    python_output_list = []
+    
     for prompt in prompts:
-        print(f"user prompt = {prompt.prompt}")
         function = match_func(prompt.prompt, function_definitions, ai, functree)
         definition = [func for func in function_definitions if func.name == function][0]
-        print(f"function_name = {function}")
-        print(get_parameters(prompt.prompt, definition, ai))
+        parameters, param_types = get_parameters(prompt.prompt, definition, ai)
+        output = build_dictionnary(prompt.prompt, function, param_types, parameters)
+        python_output_list.append(output)
+        with open("output.json", "w") as f:
+            j.dump(python_output_list, f, indent=4)
