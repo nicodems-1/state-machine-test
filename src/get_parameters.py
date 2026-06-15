@@ -90,14 +90,11 @@ def get_parameters(user_prompt: str, function_def: Functions, ai):
                 next_desc = getattr(next_type, "description", "") or ""
                 desc_suffix = f" [{next_desc}]" if next_desc else ""
 
-                # FIX: Keep the context inside the same assistant response block
                 if next_type.type in ["integer", "number"]:
                     next_prompt_str = f"\n{next_param} ({next_type.type}){desc_suffix}:"
                 else:
                     next_prompt_str = f"\n{next_param} ({next_type.type}){desc_suffix}:\""
 
-                # Depending on your tokenizer, you may need to strip leading spaces 
-                # to prevent weird token merging, but this matches your current logic.
                 prompt += ai.encode(next_prompt_str).tolist()[0]
 
             index_gen += 1
