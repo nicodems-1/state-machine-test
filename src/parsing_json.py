@@ -32,6 +32,7 @@ def prompt_parsing(prompt_json: str)-> list[Prompting] | None:
             return all_prompts
     except ValidationError as e:
         print(e)
+        exit()
 
 def definition_parsing(func_def_json: str) -> list[Functions] | None:
     func_def: list[Functions] = []
@@ -43,4 +44,5 @@ def definition_parsing(func_def_json: str) -> list[Functions] | None:
             return func_def
     except ValidationError as e:
         print(e)
+        exit()
 
