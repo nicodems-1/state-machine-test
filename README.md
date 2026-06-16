@@ -86,5 +86,18 @@ One difference is that it is completing the prompt during execution with the pam
 By completing the prompt with the extracted parameter, the model gain more context for the next extraction.  
 For integer and number we apply the logit masking technic
 
-## output
-The final output is build in a python dictionnary, then dumped with json.load.  
+## Output
+**The final output is build in a python dictionnary, then dumped with json.load.**  
+
+```c
+def build_dictionnary(prompt, function, param_name , parameters_value):
+    output_dic:  = {
+                    "prompt": prompt,
+                    "name": function,
+                    "parameters": {}
+                    }
+    params = output_dic["parameters"]
+    for i, param in enumerate(parameters_value):
+        params[param_name[i]] = param
+    return output_dic
+```
