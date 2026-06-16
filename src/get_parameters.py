@@ -82,8 +82,8 @@ def get_parameters(
         prompt.append(token_index)
         answer.append(token_index)
 
-        if (ai.decode(token_index).endswith('\n') or
-                ai.decode(token_index) == '"'):
+        if (ai.decode([token_index]).endswith('\n') or
+                ai.decode([token_index]) == '"'):
 
             if param_types[param_index].type == "integer":
                 # print("INTEGER_TYPE")
