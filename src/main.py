@@ -32,5 +32,6 @@ if __name__ == "__main__":
         parameters, param_types = get_parameters(prompt.prompt, definition, ai)
         output = build_dictionnary(prompt.prompt, function, param_types, parameters)
         python_output_list.append(output)
-        with open("output.json", "w") as f:
+        with open("data/output/output.json", "w") as f:
             j.dump(python_output_list, f, indent=4)
+            print(j.dumps(output, indent=4))

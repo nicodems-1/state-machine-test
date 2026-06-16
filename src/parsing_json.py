@@ -22,7 +22,7 @@ class Ouput(BaseModel):
     parameters: dict[str, type]
 
 
-def prompt_parsing(prompt_json: str)-> list[Prompting] | None:
+def prompt_parsing(prompt_json: str)-> list[Prompting]:
     all_prompts: list[Prompting] = []
     try:
         with open (prompt_json) as f:
@@ -34,7 +34,7 @@ def prompt_parsing(prompt_json: str)-> list[Prompting] | None:
         print(e)
         exit()
 
-def definition_parsing(func_def_json: str) -> list[Functions] | None:
+def definition_parsing(func_def_json: str) -> list[Functions]:
     func_def: list[Functions] = []
     try:
         with open (func_def_json) as f:

@@ -1,11 +1,10 @@
-import json as j
-import numpy as np
 from parsing_json import Functions, Type
-
+from llm_sdk import Small_LLM_Model
+import numpy as np
 
 def get_prompt_parameters(prompt: str, function_def: Functions) -> tuple[str, list[str], list[Type]]:
-    parameters = []
-    param_types = []
+    parameters: list[str] = []
+    param_types: list[Type] = []
     for parameter, types in function_def.parameters.items():
         parameters.append(parameter)
         param_types.append(types)
@@ -26,8 +25,8 @@ You are a strict data extraction engine. {function_def.description}<|im_end|>
     return (prompt_ai, parameters, param_types)
 
 
-def get_allowed_tokens(variable_type: Type, ai) -> list[int]:
-    allowed_digits = [" 0", " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "\n"]
+def get_allowed_tokens(variable_type: Type, ai: Small_LLM_Model) -> list[int]:
+    allowed_digits: list[str] = [" 0", " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "\n"]
     allowed_tokens: list[int] = []
     if variable_type.type in ["number", "integer"]:
         for char in "0123456789":
@@ -36,18 +35,19 @@ def get_allowed_tokens(variable_type: Type, ai) -> list[int]:
         if variable_type.type == "number":
             allowed_digits.append('.')
         for item in allowed_digits:
-            allowed_tokens.extend(ai.encode(item).tolist()[0])
+            encoded = ai.encode(item)
+            allowed_tokens.extend(encoded[0].tolist())
     return allowed_tokens
 
 
-def get_parameters(user_prompt: str, function_def: Functions, ai):
-    prompt, parameters, param_types = get_prompt_parameters(user_prompt, function_def)
-    prompt = ai.encode(prompt).tolist()[0]
-    answer = []
-    length_param = len(parameters)
-    param_index = 0
-    index_gen = 0
-    answer_list = []
+def get_parameters(user_prompt: str, function_def: Functions, ai: Small_LLM_Model)->tuple[list[int|float|str], list[str]]:
+    prompt_string, parameters, param_types = get_prompt_parameters(user_prompt, function_def)
+    prompt: list[int] = ai.encode(prompt_string).tolist()[0]
+    answer: list[int] = []
+    length_param: int = len(parameters)
+    param_index: int = 0
+    index_gen: int = 0
+    answer_list: list[int|float|str] = []
 
     while param_index < length_param:
         logits: list[float] = ai.get_logits_from_input_ids(prompt)
@@ -59,7 +59,7 @@ def get_parameters(user_prompt: str, function_def: Functions, ai):
             for tokens in allowed_tokens:
                 logits_cpy[tokens] = logits[tokens]
         elif param_types[param_index].type == "string":
-            encoded = ai.encode("\n").tolist()[0]
+            encoded: list[int] = ai.encode("\n").tolist()[0]
             for t in encoded:
                 logits_cpy[t] = float('-inf')
 
@@ -68,16 +68,16 @@ def get_parameters(user_prompt: str, function_def: Functions, ai):
         answer.append(token_index)
 
         if ai.decode(token_index).endswith('\n') or ai.decode(token_index) == '"':
-            print(f"Found an answer in str, passing through casting {ai.decode(answer)}")
+            # print(f"Found an answer in str, passing through casting {ai.decode(answer)}")
 
             if param_types[param_index].type == "integer":
-                print("INTEGER_TYPE")
+                # print("INTEGER_TYPE")
                 answer_list.append(int(ai.decode(answer).strip("\n").strip(" ").strip("\"")))
             elif param_types[param_index].type == "number":
-                print("NUMBER TYPE")
+                # print("NUMBER TYPE")
                 answer_list.append(float(ai.decode(answer).strip("\n").strip(" ").strip("\"")))
             elif param_types[param_index].type == "string":
-                print("STRING TYPE")
+                # print("STRING TYPE")
                 answer_list.append(str(ai.decode(answer).strip("\n").strip(" ").strip("'").strip("\"")))
 
             param_index += 1
@@ -102,5 +102,4 @@ def get_parameters(user_prompt: str, function_def: Functions, ai):
           print("could not find the parameters, exiting the model language")
           break
 
-    print(f"Final list of answers: {answer_list}")
     return (answer_list, parameters)

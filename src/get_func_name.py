@@ -1,17 +1,18 @@
-from json import load, dump
 import numpy as np
 import tree_functions as t
 from parsing_json import Functions
+from llm_sdk import Small_LLM_Model
 
-def match_func(call: str, function_def: list[Functions], ai, functree: t.FunctionTrie) -> str:
-    tool_box_func = []
-    print(str(function_def))
+
+def match_func(call: str, function_def: list[Functions],
+               ai: Small_LLM_Model, functree: t.FunctionTrie) -> str:
+    tool_box_func: list[str] = []
 
     for funcs in function_def:
         tool_box_func.append(funcs.name)
 
-    prompt = (f"""This is a list of available functions: {str(tool_box_func).join(", ")}
-              These definitions correspond respecively to each fuctions {str(function_def)}
+    prompt = (f"""List of available functions: {str(tool_box_func).join(", ")}
+              These definitions correspond respectively to each functions {str(function_def)}
     You should find the corresponding function_name with this: {call}""")
 
     '''send the prompt to the model with function definitions such as Prompt + funcs_names + funcs_def' '''
