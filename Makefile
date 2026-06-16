@@ -1,9 +1,9 @@
 MAIN = src/main.py
-OUTPUT = data/output.json
+OUTPUT = data/output
 
 init-data:
 	mkdir -p data/output
-	touch data/output.json
+	touch data/output/output.json
 
 install:
 	uv sync 
@@ -15,11 +15,11 @@ debug: install
 	uv pdbg python $(MAIN)
 
 clean:
-	rm -rf $(OUTPUT) .venv
+	rm -rf $(OUTPUT)
 
 lint: install
-	uv run flake8 src
-	uv run mypy . \
+	uv run flake8 src ;\
+	uv run mypy src \
 	--warn-return-any \
 	--warn-unused-ignores \
 	--ignore-missing-imports \

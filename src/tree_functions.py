@@ -1,10 +1,11 @@
-from llm_sdk import Small_LLM_Model
+from llm_sdk import Small_LLM_Model  # type: ignore
 
 
 class TrieNode():
-    def __init__(self)->None:
+    def __init__(self) -> None:
         self.children: dict = {}
         self.is_end_of_word = False
+
 
 class FunctionTrie():
     def __init__(self, ai_instance: Small_LLM_Model):
@@ -12,7 +13,7 @@ class FunctionTrie():
         self.eos = 151645
         self.ai: Small_LLM_Model = ai_instance
 
-    def add_function(self, function_name: str)->None:
+    def add_function(self, function_name: str) -> None:
         self.tokens = self.ai.encode(function_name).tolist()[0]
         current_node = self.root
         for token_id in self.tokens:
@@ -24,7 +25,7 @@ class FunctionTrie():
                 current_node = new_node
         current_node.is_end_of_word = True
 
-    def get_valid_token(self, current_node: TrieNode)->list[int]:
+    def get_valid_token(self, current_node: TrieNode) -> list[int]:
         allowed_tokens = list(current_node.children.keys())
 
         if current_node.is_end_of_word:

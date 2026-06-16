@@ -1,7 +1,7 @@
 import numpy as np
 import tree_functions as t
 from parsing_json import Functions
-from llm_sdk import Small_LLM_Model
+from llm_sdk import Small_LLM_Model  # type: ignore
 
 
 def match_func(call: str, function_def: list[Functions],
@@ -12,12 +12,14 @@ def match_func(call: str, function_def: list[Functions],
         tool_box_func.append(funcs.name)
 
     prompt = (f"""List of available functions: {str(tool_box_func).join(", ")}
-              These definitions correspond respectively to each functions {str(function_def)}
+              These definitions correspond respectively
+              to each functions {str(function_def)}
     You should find the corresponding function_name with this: {call}""")
 
-    '''send the prompt to the model with function definitions such as Prompt + funcs_names + funcs_def' '''
+    '''send the prompt to the model with function
+    definitions such as Prompt + funcs_names + funcs_def' '''
 
-    answer = []
+    answer: list[int] = []
     ai_prompt = ai.encode(prompt).tolist()[0]
     current_state = functree.root
     while True:
@@ -37,4 +39,5 @@ def match_func(call: str, function_def: list[Functions],
         ai_prompt.append(token_index)
         answer.append(token_index)
 
-    return (ai.decode(answer))
+    answer_txt: str = ai.decode(answer)
+    return answer_txt
