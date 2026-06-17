@@ -65,6 +65,13 @@ def get_parameters(
     answer_list: list[int | float | str] = []
 
     while param_index < length_param:
+        index_gen += 1
+        if index_gen > 16:
+            print(
+                f"\nCould not parameters"
+                f"for this prompt : \"{user_prompt}\"")
+            print("DISCARDING\n")
+            break
         logits: list[float] = ai.get_logits_from_input_ids(prompt)
         logits_cpy = np.array(logits)
         allowed_tokens = get_allowed_tokens(param_types[param_index], ai)
@@ -121,10 +128,4 @@ def get_parameters(
                         )
 
                 prompt += ai.encode(next_prompt_str).tolist()[0]
-
-            index_gen += 1
-        if index_gen > 100:
-            print("could not find the parameters, exiting the model language")
-            break
-
     return (answer_list, parameters)

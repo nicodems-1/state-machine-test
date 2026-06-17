@@ -1,5 +1,5 @@
 
-from parsing_json import definition_parsing, prompt_parsing
+from parsing_json import definition_parsing, prompt_parsing, Parameters
 from llm_sdk import Small_LLM_Model  # type: ignore
 import tree_functions as t
 import argparse
@@ -23,6 +23,15 @@ if __name__ == "__main__":
     function_definitions = definition_parsing(args.functions_definitions)
     prompts = prompt_parsing(args.input)
 
+    try:
+        for item in function_definitions:
+            Parameters.model_validate(item.parameters)
+            if item.parameters is None:
+                print(item.parameters)
+                raise ValueError("No parameters provided")
+    except ValueError as e:
+        print(e)
+        exit()
     ai = Small_LLM_Model()
     functree = t.FunctionTrie(ai)
 
@@ -41,6 +50,8 @@ if __name__ == "__main__":
             if func.name == function_typstr
             ][0]
         parameters, param_types = get_parameters(prompt.prompt, definition, ai)
+        if len(parameters) == 0:
+            continue
         output = build_dictionnary(
             prompt.prompt, str(function_typstr), param_types, parameters)
         python_output_list.append(output)
