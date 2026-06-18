@@ -14,6 +14,7 @@ debug: install
 clean:
 	@echo "Cleaning up Python files"
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
+	@find . -type d -name ".mypy_cache" -exec rm -rf {} +
 
 lint: install
 	uv run flake8 src ;\
