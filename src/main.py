@@ -7,6 +7,7 @@ from src.get_func_name import match_func
 from src.get_parameters import get_parameters
 from src.building import build_dictionnary
 import json as j
+from pathlib import Path
 
 
 def main() -> None:
@@ -34,16 +35,34 @@ Raises:
 """
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--input", default="data/input/function_calling_tests.json"
+        "--input", default="data/input/function_calling_tests.json",
+        help="path to the functions prompts"
         )
-    parser.add_argument("--output", default="data/output")
+    parser.add_argument("--output", default="data/output/output.json",
+                        help="path to the output data of the LLM"
+                        )
     parser.add_argument(
         "--functions_definitions",
-        default="data/input/functions_definition.json"
+        default="data/input/functions_definition.json",
+        help="path to the Function definitions"
         )
     args = parser.parse_args()
-
+    output_path = Path(args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with open(args.functions_definitions):
+            pass
+    except OSError as e:
+        print(f"The function definition file does not exist: {e}")
+        exit()
     function_definitions = definition_parsing(args.functions_definitions)
+    try:
+        with open(args.input):
+            pass
+    except OSError as e:
+        print(f"The input file does not exist: {e}")
+        exit()
+
     prompts = prompt_parsing(args.input)
 
     try:
@@ -63,26 +82,34 @@ Raises:
     python_output_list = []
 
     for prompt in prompts:
+        print("\n\n")
+        print(f"prompt = {prompt.prompt}")
+        print("Searching matching Function....")
         function_typ = match_func(
             prompt.prompt, function_definitions, ai, functree
             )
         function_typstr: str = str(function_typ)
+        print(f"match found :{function_typstr}")
         definition = [
             func for func in function_definitions
             if func.name == function_typstr
             ][0]
+        print("Searching matching parameters....")
         parameters, param_types = get_parameters(prompt.prompt, definition, ai)
+        print(f"Parameters founds: {parameters}")
+        print("\n\n")
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         if len(parameters) == 0:
             continue
         output = build_dictionnary(
             prompt.prompt, str(function_typstr), param_types, parameters)
         python_output_list.append(output)
-        try: 
-            with open("data/output/output.json", "w") as f:
+        try:
+            with open(output_path, "w") as f:
                 j.dump(python_output_list, f, indent=4)
-                print(j.dumps(output, indent=4))
         except OSError as e:
-            print(f"Could not dump file in the ouput file it seems it's protected: {e}")
+            print(f"Could not dump file in the"
+                  f"ouput file it seems it's protected: {e}")
             exit()
 
 
