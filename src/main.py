@@ -58,7 +58,6 @@ Raises:
     ai = Small_LLM_Model()
     functree = t.FunctionTrie(ai)
 
-    '''adding functions to the trees'''
     for function in function_definitions:
         functree.add_function(function.name)
     python_output_list = []
@@ -78,9 +77,13 @@ Raises:
         output = build_dictionnary(
             prompt.prompt, str(function_typstr), param_types, parameters)
         python_output_list.append(output)
-        with open("data/output/output.json", "w") as f:
-            j.dump(python_output_list, f, indent=4)
-            print(j.dumps(output, indent=4))
+        try: 
+            with open("data/output/output.json", "w") as f:
+                j.dump(python_output_list, f, indent=4)
+                print(j.dumps(output, indent=4))
+        except OSError as e:
+            print(f"Could not dump file in the ouput file it seems it's protected: {e}")
+            exit()
 
 
 if __name__ == "__main__":
