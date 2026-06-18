@@ -8,26 +8,28 @@ from get_parameters import get_parameters
 from building import build_dictionnary
 import json as j
 
-def main():
+
+def main() -> None:
     """
 Execute the main routine for the 'call me maybe' function matching script.
 
-This module serves as the entry point to parse function definitions and user
-prompts from JSON files. It validates the function parameters using Pydantic,
-initializes a small LLM alongside a FunctionTrie, and iterates through prompts 
-to match each one to the appropriate function. Finally, it extracts the required 
-parameters and exports the structured data to a JSON output file.
+This module serves as the entry point to parse function definitions
+and user prompts from JSON files. It validates the function parameters
+using Pydantic, initializes a small LLM alongside a FunctionTrie,
+and iterates through prompts to match each one to the appropriate function.
+Finally, it extracts the required parameters and exports the structured data
+to a JSON output file.
 
 Command-line Arguments:
-    --input (str): Path to the JSON file containing user prompts. 
+    --input (str): Path to the JSON file containing user prompts.
         Defaults to 'data/input/function_calling_tests.json'.
-    --output (str): Directory path for the resulting output files. 
+    --output (str): Directory path for the resulting output files.
         Defaults to 'data/output'.
-    --functions_definitions (str): Path to the JSON file containing function specs. 
+    --functions_definitions (str): Path to JSON file containing function specs.
         Defaults to 'data/input/functions_definition.json'.
 
 Raises:
-    ValueError: If a function definition is successfully parsed but contains 
+    ValueError: If a function definition is successfully parsed but contains
         no parameters (None).
 """
     parser = argparse.ArgumentParser()
@@ -79,6 +81,7 @@ Raises:
         with open("data/output/output.json", "w") as f:
             j.dump(python_output_list, f, indent=4)
             print(j.dumps(output, indent=4))
+
 
 if __name__ == "__main__":
     main()

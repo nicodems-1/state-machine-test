@@ -5,7 +5,7 @@ def build_dictionnary(prompt: str, function: str,
                       param_name: list[str], parameters_value: list[Any]
                       ) -> Dict[str, Union[str, Dict[str, Any]]]:
     """
-    Construct a structured dictionary containing the prompt, function, and parameters.
+    Construct a structured dictionary with the prompt, function,  parameters.
 
     Args:
         prompt: The raw user input string.
@@ -14,7 +14,10 @@ def build_dictionnary(prompt: str, function: str,
         parameters_value: A list of the corresponding extracted values.
 
     Returns:
-        A dictionary containing the prompt, function name, and a nested 
+        A dictionary containing:
+        -the prompt,
+        -the function name
+        and a nested
         dictionary mapping parameter names to their respective values.
     """
     output_dic: Dict[str, Union[str, Dict[str, Any]]] = {

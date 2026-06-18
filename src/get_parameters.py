@@ -14,7 +14,7 @@ def get_prompt_parameters(
         function_def: The definition of the target function.
 
     Returns:
-        A tuple containing the formatted AI prompt string, a list of 
+        A tuple containing the formatted AI prompt string, a list of
         parameter names, and a list of parameter types.
     """
     parameters: list[str] = []
@@ -45,7 +45,7 @@ def get_allowed_tokens(
     """
     Determine the allowed LLM token IDs based on the expected variable type.
 
-    Restricts generation by defining a valid subset of tokens (e.g., only 
+    Restricts generation by defining a valid subset of tokens (e.g., only
     digits for integers, or digits and periods for floats).
 
     Args:
@@ -81,7 +81,7 @@ def get_parameters(
     """
     Extract typed function parameters from a user prompt using an LLM.
 
-    Uses logits manipulation to enforce specific type constraints (integers, 
+    Uses logits manipulation to enforce specific type constraints (integers,
     numbers, or strings) during token generation.
 
     Args:
@@ -90,7 +90,7 @@ def get_parameters(
         ai: The initialized Small_LLM_Model instance.
 
     Returns:
-        A tuple containing a list of the extracted parameter values (cast 
+        A tuple containing a list of the extracted parameter values (cast
         to int, float, or str) and a list of their corresponding names.
     """
     prompt_string, parameters, param_types = (

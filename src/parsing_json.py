@@ -24,12 +24,14 @@ class Type(BaseModel):
 
 
 class Parameters(BaseModel):
-    """Represent a collection of parameter names mapped to their allowed types."""
+    """Represent a collection of parameter names
+    mapped to their allowed types."""
     dict[str, Type]
 
 
 class Functions(BaseModel):
-    """Define the schema, metadata, and parameters for an available AI function."""
+    """Define the schema, metadata, and parameters
+    for an available AI function."""
     name: str
     description: str
     parameters: dict[str, Type]
@@ -48,7 +50,8 @@ class Functions(BaseModel):
 
 
 class Output(BaseModel):
-    """Represent the final structured output mapping a prompt to a function and its arguments."""
+    """Represent the final structured output mapping a prompt
+    to a function and its arguments."""
     prompt: str
     name: str
     parameters: dict[str, type]
@@ -78,10 +81,12 @@ def prompt_parsing(prompt_json: str) -> list[Prompting]:
 
 def definition_parsing(func_def_json: str) -> list[Functions]:
     """
-    Parse a JSON file of function specifications into a list of Functions models.
+    Parse a JSON file of function specifications
+    into a list of Functions models.
 
     Args:
-        func_def_json: The file path to the JSON containing function definitions.
+        func_def_json: The file path to the JSON containing
+        function definitions.
 
     Returns:
         A list of validated Functions objects.
