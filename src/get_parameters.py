@@ -6,6 +6,17 @@ import numpy as np
 def get_prompt_parameters(
         prompt: str,
         function_def: Functions) -> tuple[str, list[str], list[Type]]:
+    """
+    Construct an AI prompt for extracting parameters from a user request.
+
+    Args:
+        prompt: The raw user input string.
+        function_def: The definition of the target function.
+
+    Returns:
+        A tuple containing the formatted AI prompt string, a list of 
+        parameter names, and a list of parameter types.
+    """
     parameters: list[str] = []
     param_types: list[Type] = []
     for parameter, types in function_def.parameters.items():
@@ -31,6 +42,19 @@ You are a strict data extraction engine. {function_def.description}<|im_end|>
 def get_allowed_tokens(
         variable_type: Type, ai: Small_LLM_Model
         ) -> list[int]:
+    """
+    Determine the allowed LLM token IDs based on the expected variable type.
+
+    Restricts generation by defining a valid subset of tokens (e.g., only 
+    digits for integers, or digits and periods for floats).
+
+    Args:
+        variable_type: The expected data type of the parameter.
+        ai: The initialized Small_LLM_Model instance.
+
+    Returns:
+        A list of allowed token IDs as integers.
+    """
     allowed_digits: list[str] = [
         " 0", " 1", " 2", " 3",
         " 4", " 5", " 6", " 7",
@@ -54,6 +78,21 @@ def get_parameters(
         function_def: Functions,
         ai: Small_LLM_Model
         ) -> tuple[list[int | float | str], list[str]]:
+    """
+    Extract typed function parameters from a user prompt using an LLM.
+
+    Uses logits manipulation to enforce specific type constraints (integers, 
+    numbers, or strings) during token generation.
+
+    Args:
+        user_prompt: The raw user input string.
+        function_def: The target function's structure and requirements.
+        ai: The initialized Small_LLM_Model instance.
+
+    Returns:
+        A tuple containing a list of the extracted parameter values (cast 
+        to int, float, or str) and a list of their corresponding names.
+    """
     prompt_string, parameters, param_types = (
         get_prompt_parameters(user_prompt, function_def)
                                             )
