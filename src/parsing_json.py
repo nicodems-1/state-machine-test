@@ -38,6 +38,10 @@ class Functions(BaseModel):
     @model_validator(mode="after")
     def check_empty_field(self) -> Self:
         """Ensure no fields within the function definition are empty."""
+        parameter = self.parameters
+        for keys in parameter:
+            if not keys:
+                raise ValueError("The parameter must have a Name: ")
         for field, name in self:
             if name in ("", [], {}) or field in ("", [], {}):
                 raise ValueError(f"Field {field}, cannot be empty")
@@ -72,6 +76,9 @@ def prompt_parsing(prompt_json: str) -> list[Prompting]:
     except ValidationError as e:
         print(f"Parsing Error: function_calling: {e}")
         exit()
+    except json.JSONDecodeError as e:
+        print(f"The function_definitions file is not correct : {e}")
+        exit()
 
 
 def definition_parsing(func_def_json: str) -> list[Functions]:
@@ -95,4 +102,7 @@ def definition_parsing(func_def_json: str) -> list[Functions]:
             return func_def
     except ValidationError as e:
         print(f"Parsing Error: function_defintions: {e}")
+        exit()
+    except json.JSONDecodeError as e:
+        print(f"The function_definitions file is not correct : {e}")
         exit()
