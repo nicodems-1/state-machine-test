@@ -41,7 +41,7 @@ class FunctionTrie():
             current_node: The node currently being evaluated.
 
         Returns:
-            A list of allowed token IDs, including the End-Of-Sequence (EOS) 
+            A list of allowed token IDs, including the End-Of-Sequence (EOS)
             token if the current node completes a valid function name.
         """
         allowed_tokens = list(current_node.children.keys())
