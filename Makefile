@@ -25,4 +25,4 @@ lint: install
 	--disallow-untyped-defs \
 	--check-untyped-defs
 
-.PHONY: install run debug clean lint
+.PHONY: install run debug clean lint lint_strict
