@@ -1,6 +1,6 @@
 import numpy as np
-import tree_functions as t
-from parsing_json import Functions
+import src.tree_functions as t
+from src.parsing_json import Functions
 from llm_sdk import Small_LLM_Model  # type: ignore
 
 

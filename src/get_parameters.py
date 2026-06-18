@@ -1,4 +1,4 @@
-from parsing_json import Functions, Type
+from src.parsing_json import Functions, Type
 from llm_sdk import Small_LLM_Model  # type: ignore
 import numpy as np
 

@@ -1,11 +1,11 @@
 
-from parsing_json import definition_parsing, prompt_parsing, Parameters
+from src.parsing_json import definition_parsing, prompt_parsing, Parameters
 from llm_sdk import Small_LLM_Model  # type: ignore
-import tree_functions as t
+import src.tree_functions as t
 import argparse
-from get_func_name import match_func
-from get_parameters import get_parameters
-from building import build_dictionnary
+from src.get_func_name import match_func
+from src.get_parameters import get_parameters
+from src.building import build_dictionnary
 import json as j
 
 

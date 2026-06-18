@@ -11,8 +11,6 @@ class Prompting(BaseModel):
     def check_empty_field(self) -> Self:
         """Ensure no fields within the prompt model are empty."""
         for field, name in self:
-            print(f"Field_Type == {field}")
-            print(f"Name_Type == {name}")
             if name in ("", [], {}) or field in ("", [], {}):
                 raise ValueError(f"Field {field}, cannot be empty")
         return self
@@ -41,9 +39,6 @@ class Functions(BaseModel):
     def check_empty_field(self) -> Self:
         """Ensure no fields within the function definition are empty."""
         for field, name in self:
-            print(f"Field_Function == {field}")
-            print(f"Name_Functions == {name}")
-            print(f"SELF == {self}")
             if name in ("", [], {}) or field in ("", [], {}):
                 raise ValueError(f"Field {field}, cannot be empty")
         return self

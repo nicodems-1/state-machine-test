@@ -1,7 +1,8 @@
-MAIN = src/main.py
+MAIN = src.main
 OUTPUT = data/output
 PYTHON_TEMP = src/__pycache__
 MYPY_TEMP = .mypy_cache
+LLM_TEMP = llm_sdk/llm_sdk/__pycache__
 
 init-data:
 	mkdir -p data/output
@@ -11,13 +12,15 @@ install:
 	uv sync 
 
 run: install init-data
-	uv run python $(MAIN)	
+	uv run python -m $(MAIN)
 
 debug: install
 	uv pdbg python $(MAIN)
 
 clean:
-	rm -rf $(OUTPUT) $(PYTHON_TEMP) $(MYPY_TEMP)
+	rm -rf $(OUTPUT)\
+	rm -rf $(PYTHON_TEMP) \
+	rm -rf$(MYPY_TEMP)
 
 lint: install
 	uv run flake8 src ;\
