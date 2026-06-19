@@ -31,7 +31,7 @@ def match_func(call: str, function_def: list[Functions],
         for tokens in allowed_tokens:
             logits_cpy[tokens] = logits[tokens]
         token_index = int(np.argmax(logits_cpy).item())
-
+        print(ai.decode(token_index))
         if token_index == 151645:
             break
 
