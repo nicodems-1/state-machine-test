@@ -18,7 +18,7 @@ class Prompting(BaseModel):
 
 class Type(BaseModel):
     """Define the allowed data types for function parameters."""
-    type: Literal["number", "integer", "string"]
+    type: Literal["number", "integer", "string", "boolean"]
 
 
 class Parameters(BaseModel):

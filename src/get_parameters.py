@@ -132,21 +132,21 @@ def get_parameters(
                 ai.decode([token_index]) == '"'):
 
             if param_types[param_index].type == "integer":
-                # print("INTEGER_TYPE")
                 answer_list.append(
                     int(ai.decode(answer).strip("\n").strip(" ").strip("\""))
                 )
             elif param_types[param_index].type == "number":
-                # print("NUMBER TYPE")
                 answer_list.append(
                     float(ai.decode(answer).strip("\n").strip(" ").strip("\""))
                     )
             elif param_types[param_index].type == "string":
-                # print("STRING TYPE")
                 answer_list.append(
                     str(ai.decode(answer).strip("\n").strip("'").strip("\""))
                     )
-
+            elif param_types[param_index].type == "boolean":
+                answer_list.append(
+                    bool(ai.decode(answer).strip("\n").strip("'").strip("\""))
+                    )
             param_index += 1
             answer = []
             index_gen = 0
