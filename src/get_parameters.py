@@ -125,7 +125,7 @@ def get_parameters(
                 logits_cpy[t] = float('-inf')
 
         token_index = int(np.argmax(logits_cpy).item())
-        print(ai.decode(token_index))
+        print(ai.decode([token_index]))
         prompt.append(token_index)
         answer.append(token_index)
 
