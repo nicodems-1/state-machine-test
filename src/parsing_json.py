@@ -43,7 +43,9 @@ class Functions(BaseModel):
             if not keys:
                 raise ValueError("The parameter must have a Name: ")
         for field, name in self:
-            if name in ("", [], {}) or field in ("", [], {}):
+            if name in ("", [], {}):
+                raise ValueError(f"Field {name}, cannot be empty")
+            if field in ("", [], {}):
                 raise ValueError(f"Field {field}, cannot be empty")
         return self
 
