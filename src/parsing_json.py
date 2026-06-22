@@ -101,7 +101,10 @@ def definition_parsing(func_def_json: str) -> list[Functions]:
             function_calling = json.load(f)
             for definition in function_calling:
                 func_def.append(Functions.model_validate(definition))
-            return func_def
+        if not function_calling:
+            print("FUNCTION_DEFINITIONS LIST IS EMPTY")
+            exit()
+        return func_def
     except ValidationError as e:
         print(f"Parsing Error: function_defintions: {e}")
         exit()
