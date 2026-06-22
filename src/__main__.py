@@ -38,7 +38,8 @@ Raises:
         "--input", default="data/input/function_calling_tests.json",
         help="path to the functions prompts"
         )
-    parser.add_argument("--output", default="data/output//function_calling_results.json",
+    parser.add_argument("--output",
+                        default="data/output//function_calling_results.json",
                         help="path to the output data of the LLM"
                         )
     parser.add_argument(
